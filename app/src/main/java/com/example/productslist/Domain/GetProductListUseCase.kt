@@ -2,8 +2,8 @@ package com.example.productslist.Domain
 
 import androidx.lifecycle.LiveData
 
-class GetProductList(private val repository: ProductsRepository) {
-    fun getProductList():LiveData<List<Product>> {
+class GetProductListUseCase(private val repository: ProductsRepository) {
+    fun getProductList():List<Product> {
         return repository.getProductList()
     }
 }

@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 interface ProductsRepository {
 
     fun addProductToList(product: Product)
-    fun deleteProductInList(productId:Int)
-    fun getProductList():LiveData<List<Product>>
-    fun editProductInList(productId: Int)
+    fun deleteProductInList(product:Product)
+    fun getProductList():List<Product>
+    fun editProductInList(product:Product)
     fun getOneProductInList(productId: Int):Product
 }
