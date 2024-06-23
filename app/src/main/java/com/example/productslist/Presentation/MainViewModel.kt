@@ -1,5 +1,6 @@
 package com.example.productslist.Presentation
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.productslist.Data.ProductRepositoryImpl
@@ -11,11 +12,14 @@ import com.example.productslist.Domain.Product
 class MainViewModel :ViewModel(){
     val repository = ProductRepositoryImpl()
 
-    val productList = MutableLiveData<List<Product>>()
+    private val _productList = MutableLiveData<List<Product>>()
+    val productList:LiveData<List<Product>>
+        get()=_productList
 
-    val deleteProductInListUseCase = DeleteProductInListUseCase(repository)
-    val getProductInListUseCase = GetProductListUseCase(repository)
-    val editProductInListUseCase = EditProductInListUseCase(repository)
+
+    private val deleteProductInListUseCase = DeleteProductInListUseCase(repository)
+    private val getProductInListUseCase = GetProductListUseCase(repository)
+    private val editProductInListUseCase = EditProductInListUseCase(repository)
 
     fun deleteProduct(product:Product){
         deleteProductInListUseCase.deleteProductInList(product)
@@ -27,7 +31,7 @@ class MainViewModel :ViewModel(){
         getProductInList()
     }
      fun getProductInList(){
-        productList.value = getProductInListUseCase.getProductList()
+        _productList.value = getProductInListUseCase.getProductList()
     }
 
 }
