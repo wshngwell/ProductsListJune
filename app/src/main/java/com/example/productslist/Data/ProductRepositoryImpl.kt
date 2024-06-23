@@ -1,9 +1,11 @@
 package com.example.productslist.Data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.productslist.Domain.Product
 import com.example.productslist.Domain.ProductsRepository
+import kotlin.random.Random
 
 class ProductRepositoryImpl : ProductsRepository {
 
@@ -24,8 +26,8 @@ class ProductRepositoryImpl : ProductsRepository {
     })
 
     init {
-        for (i in 0..10){
-           addProductToList(Product("Product $i", i,true))
+        for (i in 0..200){
+           addProductToList(Product("Product $i", i,Random.nextBoolean()))
         }
     }
 
@@ -47,10 +49,11 @@ class ProductRepositoryImpl : ProductsRepository {
 
     override fun editProductInList(product: Product) {
         val oldProduct: Product? = listOfProducts.find { it.id == product.id }
+
         oldProduct?.let {
             deleteProductInList(it)
-            addProductToList(it)
-
+            addProductToList(product)
+            Log.d("ProductRepositoryImpl", listOfProducts.toString())
         }
 
     }
