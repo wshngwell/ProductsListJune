@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ProductsList</string>
+    <string name="count">Count</string>
+    <string name="name">Name</string>
+    <string name="ad">Добавить</string>
+    <string name="name2">Name</string>
+    <string name="count2">Count</string>
+    <string name="anotherName">Введите еще раз</string>
+    <string name="enotherCount">Введите еще раз</string>
 </resources>
