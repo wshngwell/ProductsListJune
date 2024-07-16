@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.productslist.Domain.Product
+import com.example.productslist.R
 import com.example.productslist.databinding.ProductItemFragmentBinding
 
 class ProductItemFragment : Fragment() {
@@ -78,14 +79,16 @@ class ProductItemFragment : Fragment() {
 
     fun editProductModeLogic() {
         viewModelProductItemActivity.getOunProductFromList(productId)
-        viewModelProductItemActivity.currentProduct.observe(viewLifecycleOwner){
-
+        viewModelProductItemActivity.currentProduct.observe(viewLifecycleOwner) {
+            binding.tietName.setText(it.name)
+            binding.tietCount.setText(it.count.toString())
         }
 
         binding.buttonAddProduct.setOnClickListener {
+            enteredtext = binding.tietName.text.toString()
+            enteredCount = binding.tietCount.text.toString()
             viewModelProductItemActivity.editProductToList(
-                binding.tietCount.text?.toString(),
-                binding.tietCount.text?.toString()
+                enteredtext, enteredCount
             )
         }
 
@@ -119,7 +122,22 @@ class ProductItemFragment : Fragment() {
     }
 
 
-    fun addErrorListeners() {
+    private fun addErrorListeners() {
+        viewModelProductItemActivity.errorName.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.tilName.error = getString(R.string.enterAgain)
+            } else {
+                binding.tilName.error = null
+            }
+        }
+        viewModelProductItemActivity.errorCount.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.tilCount.error = getString(R.string.enterAgain)
+            } else {
+                binding.tilCount.error = null
+            }
+        }
+
         binding.tietName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -133,7 +151,7 @@ class ProductItemFragment : Fragment() {
 
             }
         })
-        binding.tietName.addTextChangedListener(object : TextWatcher {
+        binding.tietCount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }

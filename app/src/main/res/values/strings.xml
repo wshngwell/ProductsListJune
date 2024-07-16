@@ -3,4 +3,6 @@
     <string name="entertext">Введите текст</string>
     <string name="addProduct">Добавить продукт</string>
     <string name="enterAnotherTime">Введите еще раз</string>
+    <string name="enterCount">Введите количество</string>
+    <string name="enterAgain">Введите еще раз</string>
 </resources>

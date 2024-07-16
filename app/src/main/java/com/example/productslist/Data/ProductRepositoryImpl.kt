@@ -9,6 +9,12 @@ import kotlin.random.Random
 
 object ProductRepositoryImpl : ProductsRepository {
 
+
+    private val _currentProductList = MutableLiveData<List<Product>>()
+    private val currentProductList:LiveData<List<Product>>
+        get()=_currentProductList
+
+
     private val listOfProducts: MutableSet<Product> = sortedSetOf(object : Comparator<Product> {
         override fun compare(o1: Product?, o2: Product?): Int {
             if (o1 != null && o2 != null) {
@@ -26,7 +32,7 @@ object ProductRepositoryImpl : ProductsRepository {
     })
 
     init {
-        for (i in 0..200){
+        for (i in 0..10){
            addProductToList(Product("Product $i", i,Random.nextBoolean()))
         }
     }
@@ -37,29 +43,35 @@ object ProductRepositoryImpl : ProductsRepository {
             product.id = countId++
         }
         listOfProducts.add(product)
+        updateList()
     }
 
     override fun deleteProductInList(product: Product) {
         listOfProducts.remove(product)
+        updateList()
+
     }
 
-    override fun getProductList(): List<Product> {
-        return listOfProducts.toList()
+    override fun getProductList(): LiveData<List<Product>> {
+        return currentProductList
     }
 
     override fun editProductInList(product: Product) {
         val oldProduct: Product? = listOfProducts.find { it.id == product.id }
-
         oldProduct?.let {
             deleteProductInList(it)
             addProductToList(product)
             Log.d("ProductRepositoryImpl", listOfProducts.toString())
         }
-
+        updateList()
     }
 
     override fun getOneProductInList(productId: Int): Product {
         val productInCurrentList = listOfProducts.find { it.id == productId }
         productInCurrentList?.let { return it } ?: throw RuntimeException()
     }
+    private fun updateList(){
+        _currentProductList.value = listOfProducts.toList()
+    }
+
 }
