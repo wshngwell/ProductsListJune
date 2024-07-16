@@ -7,7 +7,7 @@ import com.example.productslist.Domain.Product
 import com.example.productslist.Domain.ProductsRepository
 import kotlin.random.Random
 
-class ProductRepositoryImpl : ProductsRepository {
+object ProductRepositoryImpl : ProductsRepository {
 
     private val listOfProducts: MutableSet<Product> = sortedSetOf(object : Comparator<Product> {
         override fun compare(o1: Product?, o2: Product?): Int {

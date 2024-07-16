@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.productslist.R
 import com.example.productslist.databinding.ActivityMainBinding
+import com.example.productslist.presentation.ProductItemActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var recyclerViewProducts: RecyclerView
     private lateinit var productsAdapter: ProductsListAdapter
     private lateinit var viewModel: MainViewModel
 
@@ -25,14 +25,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         with(binding) {
-            recyclerViewProducts = recyclerViewListOfProducts
             productsAdapter = ProductsListAdapter()
-            recyclerViewProducts.adapter = productsAdapter
-            recyclerViewProducts.recycledViewPool.setMaxRecycledViews(
+            recyclerViewListOfProducts.adapter = productsAdapter
+            recyclerViewListOfProducts.recycledViewPool.setMaxRecycledViews(
                 ProductsListAdapter.PRODUCT_ENABLED,
                 ProductsListAdapter.MAX_SIZE_VIEW_HOLDERS_IN_POOL
             )
-            recyclerViewProducts.recycledViewPool.setMaxRecycledViews(
+            recyclerViewListOfProducts.recycledViewPool.setMaxRecycledViews(
                 ProductsListAdapter.PRODUCT_DISABLED,
                 ProductsListAdapter.MAX_SIZE_VIEW_HOLDERS_IN_POOL
             )
@@ -53,7 +52,13 @@ class MainActivity : AppCompatActivity() {
             { viewModel.editProductInList(it) }
 
         productsAdapter.onEditClickListener = {
-            //TODO
+            val intent = ProductItemActivity.newIntentEditMode(this,it.id)
+            startActivity(intent)
+        }
+
+        binding.floatingActionButtonOpenTheAddProductActivity.setOnClickListener{
+            val intent = ProductItemActivity.newIntentAddingMode(this)
+            startActivity(intent)
         }
         val callback = object : ItemTouchHelper.SimpleCallback(
             0,
@@ -73,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(recyclerViewProducts)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewListOfProducts)
 
     }
 }

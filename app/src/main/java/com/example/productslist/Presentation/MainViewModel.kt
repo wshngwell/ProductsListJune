@@ -10,7 +10,7 @@ import com.example.productslist.Domain.GetProductListUseCase
 import com.example.productslist.Domain.Product
 
 class MainViewModel :ViewModel(){
-    val repository = ProductRepositoryImpl()
+    val repository = ProductRepositoryImpl
 
     private val _productList = MutableLiveData<List<Product>>()
     val productList:LiveData<List<Product>>
