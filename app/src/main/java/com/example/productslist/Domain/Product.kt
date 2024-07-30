@@ -1,4 +1,4 @@
-package com.example.productslist.Domain
+package com.example.productslist.domain
 
 data class Product(
     val name:String,
@@ -7,6 +7,6 @@ data class Product(
     var id:Int = UNDEFINED_ID)
 {
     companion object{
-        const val UNDEFINED_ID = -1
+        const val UNDEFINED_ID = 0
     }
 }

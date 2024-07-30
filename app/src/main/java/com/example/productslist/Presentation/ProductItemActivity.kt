@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
-import com.example.productslist.Domain.Product
 
 
 import com.example.productslist.R
+import com.example.productslist.domain.Product
 
 
 class ProductItemActivity : AppCompatActivity(), OnEndingOfEditingFragment {

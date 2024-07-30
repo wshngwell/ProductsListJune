@@ -1,8 +1,10 @@
-package com.example.productslist.Domain
+package com.example.productslist.domain
 
-class DeleteProductInListUseCase(private val repository: ProductsRepository) {
+import javax.inject.Inject
 
-   fun deleteProductInList(product: Product){
+class DeleteProductInListUseCase @Inject constructor(private val repository: ProductsRepository) {
+
+   suspend fun deleteProductInList(product: Product){
        repository.deleteProductInList(product)
    }
 }

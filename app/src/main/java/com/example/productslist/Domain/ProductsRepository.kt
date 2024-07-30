@@ -1,12 +1,12 @@
-package com.example.productslist.Domain
+package com.example.productslist.domain
 
 import androidx.lifecycle.LiveData
 
 interface ProductsRepository {
 
-    fun addProductToList(product: Product)
-    fun deleteProductInList(product:Product)
-    fun getProductList():List<Product>
-    fun editProductInList(product:Product)
-    fun getOneProductInList(productId: Int):Product
+    suspend fun addProductToList(product: Product)
+    suspend fun deleteProductInList(product: Product)
+    fun getProductList(): LiveData<List<Product>>
+    suspend fun editProductInList(product: Product)
+    suspend fun getOneProductInList(productId: Int): Product
 }

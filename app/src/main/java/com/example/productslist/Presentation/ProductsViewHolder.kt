@@ -1,4 +1,4 @@
-package com.example.productslist.Presentation
+package com.example.productslist.presentation
 
 import android.view.View
 import android.widget.TextView

@@ -1,7 +1,13 @@
-package com.example.productslist.Domain
+package com.example.productslist.domain
 
-class GetOneProductInListUseCase(private val repository: ProductsRepository) {
-    fun getOneProductInList(productId: Int):Product {
+import com.example.productslist.domain.Product
+import com.example.productslist.domain.ProductsRepository
+import javax.inject.Inject
+
+class GetOneProductInListUseCase @Inject constructor(private val repository: ProductsRepository) {
+
+    suspend fun getOneProductInList(productId: Int): Product {
         return repository.getOneProductInList(productId)
     }
+
 }

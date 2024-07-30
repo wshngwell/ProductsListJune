@@ -1,20 +1,17 @@
-package com.example.productslist.Presentation
+package com.example.productslist.presentation
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.productslist.Domain.Product
 import com.example.productslist.R
+import com.example.productslist.domain.Product
 
 class ProductsListAdapter : ListAdapter<Product, ProductsViewHolder>(ProductsDiffUtils()) {
 
 
     var onEditClickListener:((Product)->Unit)? = null
     var onChangeStateClickListener:((Product)->Unit)? = null
-    var count = 0
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {

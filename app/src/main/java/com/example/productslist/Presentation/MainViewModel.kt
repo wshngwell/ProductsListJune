@@ -1,37 +1,35 @@
-package com.example.productslist.Presentation
+package com.example.productslist.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.productslist.Data.ProductRepositoryImpl
-import com.example.productslist.Domain.DeleteProductInListUseCase
-import com.example.productslist.Domain.EditProductInListUseCase
-import com.example.productslist.Domain.GetProductListUseCase
-import com.example.productslist.Domain.Product
+import androidx.lifecycle.viewModelScope
+import com.example.productslist.domain.DeleteProductInListUseCase
+import com.example.productslist.domain.EditProductInListUseCase
+import com.example.productslist.domain.GetProductListUseCase
+import com.example.productslist.domain.Product
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel :ViewModel(){
-    val repository = ProductRepositoryImpl
+class MainViewModel @Inject constructor
+    (
+    private val deleteProductInListUseCase: DeleteProductInListUseCase,
+    private val getProductInListUseCase: GetProductListUseCase,
+    private val editProductInListUseCase: EditProductInListUseCase,
+) : ViewModel() {
 
-    private val _productList = MutableLiveData<List<Product>>()
-    val productList:LiveData<List<Product>>
-        get()=_productList
+    val productList = getProductInListUseCase.getProductList()
 
-
-    private val deleteProductInListUseCase = DeleteProductInListUseCase(repository)
-    private val getProductInListUseCase = GetProductListUseCase(repository)
-    private val editProductInListUseCase = EditProductInListUseCase(repository)
-
-    fun deleteProduct(product:Product){
-        deleteProductInListUseCase.deleteProductInList(product)
-        getProductInList()
+    fun deleteProduct(product: Product) {
+        viewModelScope.launch {
+            deleteProductInListUseCase.deleteProductInList(product)
+        }
     }
-    fun editProductInList(product: Product){
-        val newProduct = product.copy(enabled = !product.enabled)
-        editProductInListUseCase.editProductInList(newProduct)
-        getProductInList()
-    }
-     fun getProductInList(){
-        _productList.value = getProductInListUseCase.getProductList()
+
+    fun editProductInList(product: Product) {
+        viewModelScope.launch {
+            val newProduct = product.copy(enabled = !product.enabled)
+            editProductInListUseCase.editProductInList(newProduct)
+        }
+
     }
 
 }

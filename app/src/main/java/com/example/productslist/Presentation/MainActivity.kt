@@ -1,26 +1,31 @@
-package com.example.productslist.Presentation
+package com.example.productslist.presentation
 
 import android.os.Bundle
-import android.renderscript.ScriptGroup.Binding
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.customview.widget.ViewDragHelper.Callback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.productslist.R
 import com.example.productslist.databinding.ActivityMainBinding
-import com.example.productslist.presentation.ProductItemActivity
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnEndingOfEditingFragment {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var productsAdapter: ProductsListAdapter
+
+     @Inject
+     lateinit var viewModelFactory:ViewModelFactory
+
     private lateinit var viewModel: MainViewModel
+
+    private val component by lazy {
+        (application as ProductApp).component
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        component.inject(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -36,34 +41,57 @@ class MainActivity : AppCompatActivity() {
                 ProductsListAdapter.MAX_SIZE_VIEW_HOLDERS_IN_POOL
             )
         }
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        viewModel.getProductInList()
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
         viewModel.productList.observe(this) {
-            Log.d("MainActivity", "++")
             productsAdapter.submitList(it)
         }
         addOnClickListeners()
-
     }
+
 
     private fun addOnClickListeners() {
         productsAdapter.onChangeStateClickListener =
             { viewModel.editProductInList(it) }
 
-        productsAdapter.onEditClickListener = {
-            val intent = ProductItemActivity.newIntentEditMode(this,it.id)
-            startActivity(intent)
+
+        if (binding.fragmentMainContainer != null) {
+            productsAdapter.onEditClickListener = {
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.fragmentMainContainer,
+                        ProductItemFragment.addFragmentInEditMode(it.id)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+            }
+            binding.floatingActionButtonOpenTheAddProductActivity.setOnClickListener {
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.fragmentMainContainer,
+                        ProductItemFragment.addFragmentInAddMode()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }else{
+            productsAdapter.onEditClickListener = {
+                val intent = ProductItemActivity.newIntentEditMode(this, it.id)
+                startActivity(intent)
+            }
+
+            binding.floatingActionButtonOpenTheAddProductActivity.setOnClickListener {
+                val intent = ProductItemActivity.newIntentAddingMode(this)
+                startActivity(intent)
+            }
         }
 
-        binding.floatingActionButtonOpenTheAddProductActivity.setOnClickListener{
-            val intent = ProductItemActivity.newIntentAddingMode(this)
-            startActivity(intent)
-        }
+
+
         val callback = object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ){
+        ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -80,5 +108,9 @@ class MainActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewListOfProducts)
 
+    }
+
+    override fun endingOfEditingFragment() {
+        supportFragmentManager.popBackStack()
     }
 }

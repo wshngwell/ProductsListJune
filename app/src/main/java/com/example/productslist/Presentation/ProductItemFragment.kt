@@ -9,12 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.productslist.Domain.Product
+import com.example.productslist.domain.Product
 import com.example.productslist.R
 import com.example.productslist.databinding.ProductItemFragmentBinding
+import javax.inject.Inject
 
 class ProductItemFragment : Fragment() {
+
+    private val component by lazy {
+        (requireActivity().application as ProductApp).component
+    }
     private lateinit var viewModelProductItemActivity: ProductItemViewModel
+
+    @Inject
+     lateinit var viewModelFactory:ViewModelFactory
 
     private var _binding: ProductItemFragmentBinding? = null
     private val binding: ProductItemFragmentBinding
@@ -39,6 +47,7 @@ class ProductItemFragment : Fragment() {
         super.onAttach(context)
         if (context is OnEndingOfEditingFragment) {
             onEndingOfEditingFragment = context
+            component.inject(this)
         } else {
             throw RuntimeException("Activity is not implementing the relevant interface")
         }
@@ -56,7 +65,7 @@ class ProductItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModelProductItemActivity =
-            ViewModelProvider(this)[ProductItemViewModel::class.java]
+            ViewModelProvider(this, viewModelFactory)[ProductItemViewModel::class.java]
         addErrorListeners()
         closingActivity()
         when (screenMode) {
@@ -65,7 +74,6 @@ class ProductItemFragment : Fragment() {
             else -> throw RuntimeException("Unknown screen mode")
         }
     }
-
     fun addProductModeLogic() {
 
         binding.buttonAddProduct.setOnClickListener {
@@ -196,8 +204,4 @@ class ProductItemFragment : Fragment() {
             }
         }
     }
-}
-
-interface OnEndingOfEditingFragment {
-    fun endingOfEditingFragment()
 }

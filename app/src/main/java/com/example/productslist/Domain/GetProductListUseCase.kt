@@ -1,9 +1,10 @@
-package com.example.productslist.Domain
+package com.example.productslist.domain
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
 
-class GetProductListUseCase(private val repository: ProductsRepository) {
-    fun getProductList():List<Product> {
+class GetProductListUseCase @Inject constructor(private val repository: ProductsRepository) {
+    fun getProductList():LiveData<List<Product>>{
         return repository.getProductList()
     }
 }
